@@ -8,7 +8,7 @@ use PoP\Hooks\AbstractHookSet;
 use PoP\RESTAPI\Helpers\HookHelpers;
 use PoPSchema\Posts\ConditionalOnComponent\RESTAPI\RouteModuleProcessors\EntryRouteModuleProcessor;
 
-class PostHooks extends AbstractHookSet
+class PostHookSet extends AbstractHookSet
 {
     const CATEGORY_RESTFIELDS = 'categories.id|name|url';
 
