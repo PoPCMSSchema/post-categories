@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PoPSchema\PostCategories\Conditional\RESTAPI\RouteModuleProcessors;
+namespace PoPSchema\PostCategories\ConditionalOnComponent\RESTAPI\RouteModuleProcessors;
 
 use PoP\API\Facades\FieldQueryConvertorFacade;
 use PoP\API\Response\Schemes as APISchemes;
