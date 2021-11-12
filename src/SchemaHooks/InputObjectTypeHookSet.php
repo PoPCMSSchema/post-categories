@@ -12,7 +12,7 @@ use PoP\Engine\TypeResolvers\ScalarType\IDScalarTypeResolver;
 use PoP\Hooks\AbstractHookSet;
 use PoPSchema\Posts\TypeResolvers\InputObjectType\AbstractPostsFilterInputObjectTypeResolver;
 
-class InputObjectHookSet extends AbstractHookSet
+class InputObjectTypeHookSet extends AbstractHookSet
 {
     private ?IDScalarTypeResolver $idScalarTypeResolver = null;
 
