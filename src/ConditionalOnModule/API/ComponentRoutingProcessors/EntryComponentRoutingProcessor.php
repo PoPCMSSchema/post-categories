@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PoPCMSSchema\PostCategories\ConditionalOnModule\RESTAPI\RouteModuleProcessors;
+namespace PoPCMSSchema\PostCategories\ConditionalOnModule\API\ComponentRoutingProcessors;
 
 use PoP\Root\App;
 use PoPAPI\API\Response\Schemes as APISchemes;
-use PoPAPI\RESTAPI\RouteModuleProcessors\AbstractRESTEntryRouteModuleProcessor;
+use PoP\ComponentRouting\AbstractEntryComponentRoutingProcessor;
 use PoP\Root\Routing\RequestNature;
 use PoPCMSSchema\Categories\Routing\RequestNature as CategoryRequestNature;
 use PoPCMSSchema\PostCategories\Module;
@@ -17,7 +17,7 @@ use PoPCMSSchema\PostCategories\TypeAPIs\PostCategoryTypeAPIInterface;
 use PoPCMSSchema\Posts\Module as PostsModule;
 use PoPCMSSchema\Posts\ModuleConfiguration as PostsModuleConfiguration;
 
-class EntryRouteModuleProcessor extends AbstractRESTEntryRouteModuleProcessor
+class EntryComponentRoutingProcessor extends AbstractEntryComponentRoutingProcessor
 {
     private ?PostCategoryTypeAPIInterface $postCategoryTypeAPI = null;
 
@@ -30,86 +30,53 @@ class EntryRouteModuleProcessor extends AbstractRESTEntryRouteModuleProcessor
         return $this->postCategoryTypeAPI ??= $this->instanceManager->getInstance(PostCategoryTypeAPIInterface::class);
     }
 
-    protected function getInitialRESTFields(): string
-    {
-        return 'id|name|count|url';
-    }
-
     /**
      * @return array<string, array<array>>
      */
-    public function getModulesVarsPropertiesByNature(): array
+    public function getStatePropertiesToSelectComponentByNature(): array
     {
         $ret = array();
         $ret[CategoryRequestNature::CATEGORY][] = [
-            'module' => [
-                PostCategoryFieldDataloadModuleProcessor::class,
-                PostCategoryFieldDataloadModuleProcessor::MODULE_DATALOAD_RELATIONALFIELDS_CATEGORY,
-                [
-                    'fields' => !empty(App::getState('query')) ?
-                        App::getState('query') :
-                        $this->getRESTFields()
-                ]
-            ],
+            'component' => [PostCategoryFieldDataloadModuleProcessor::class, PostCategoryFieldDataloadModuleProcessor::MODULE_DATALOAD_RELATIONALFIELDS_CATEGORY],
             'conditions' => [
                 'scheme' => APISchemes::API,
-                'datastructure' => $this->getRestDataStructureFormatter()->getName(),
                 'routing' => [
                     'taxonomy-name' => $this->getPostCategoryTypeAPI()->getPostCategoryTaxonomyName(),
                 ],
             ],
         ];
-
         return $ret;
     }
 
     /**
      * @return array<string, array<string, array<array>>>
      */
-    public function getModulesVarsPropertiesByNatureAndRoute(): array
+    public function getStatePropertiesToSelectComponentByNatureAndRoute(): array
     {
         $ret = array();
         /** @var ModuleConfiguration */
         $moduleConfiguration = App::getModule(Module::class)->getConfiguration();
-        $routemodules = array(
-            $moduleConfiguration->getPostCategoriesRoute() => [
-                PostCategoryFieldDataloadModuleProcessor::class,
-                PostCategoryFieldDataloadModuleProcessor::MODULE_DATALOAD_RELATIONALFIELDS_CATEGORYLIST,
-                [
-                    'fields' => !empty(App::getState('query')) ?
-                        App::getState('query') :
-                        $this->getRESTFields()
-                ]
-            ],
+        $routeComponents = array(
+            $moduleConfiguration->getPostCategoriesRoute() => [PostCategoryFieldDataloadModuleProcessor::class, PostCategoryFieldDataloadModuleProcessor::MODULE_DATALOAD_RELATIONALFIELDS_CATEGORYLIST],
         );
-        foreach ($routemodules as $route => $module) {
+        foreach ($routeComponents as $route => $component) {
             $ret[RequestNature::GENERIC][$route][] = [
-                'module' => $module,
+                'component' => $component,
                 'conditions' => [
                     'scheme' => APISchemes::API,
-                    'datastructure' => $this->getRestDataStructureFormatter()->getName(),
                 ],
             ];
         }
         /** @var PostsModuleConfiguration */
         $moduleConfiguration = App::getModule(PostsModule::class)->getConfiguration();
-        $routemodules = array(
-            $moduleConfiguration->getPostsRoute() => [
-                CategoryPostFieldDataloadModuleProcessor::class,
-                CategoryPostFieldDataloadModuleProcessor::MODULE_DATALOAD_RELATIONALFIELDS_CATEGORYPOSTLIST,
-                [
-                    'fields' => !empty(App::getState('query')) ?
-                        App::getState('query') :
-                        $this->getRESTFields()
-                    ]
-                ],
+        $routeComponents = array(
+            $moduleConfiguration->getPostsRoute() => [CategoryPostFieldDataloadModuleProcessor::class, CategoryPostFieldDataloadModuleProcessor::MODULE_DATALOAD_RELATIONALFIELDS_CATEGORYPOSTLIST],
         );
-        foreach ($routemodules as $route => $module) {
+        foreach ($routeComponents as $route => $component) {
             $ret[CategoryRequestNature::CATEGORY][$route][] = [
-                'module' => $module,
+                'component' => $component,
                 'conditions' => [
                     'scheme' => APISchemes::API,
-                    'datastructure' => $this->getRestDataStructureFormatter()->getName(),
                     'routing' => [
                         'taxonomy-name' => $this->getPostCategoryTypeAPI()->getPostCategoryTaxonomyName(),
                     ],
