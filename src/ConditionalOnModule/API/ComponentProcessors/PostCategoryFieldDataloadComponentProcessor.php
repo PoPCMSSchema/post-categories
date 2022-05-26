@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PoPCMSSchema\PostCategories\ConditionalOnModule\API\ModuleProcessors;
+namespace PoPCMSSchema\PostCategories\ConditionalOnModule\API\ComponentProcessors;
 
 use PoP\ComponentModel\TypeResolvers\RelationalTypeResolverInterface;
-use PoPCMSSchema\Categories\ConditionalOnModule\API\ModuleProcessors\AbstractFieldDataloadModuleProcessor;
+use PoPCMSSchema\Categories\ConditionalOnModule\API\ComponentProcessors\AbstractFieldDataloadComponentProcessor;
 use PoPCMSSchema\PostCategories\TypeResolvers\ObjectType\PostCategoryObjectTypeResolver;
 
-class PostCategoryFieldDataloadModuleProcessor extends AbstractFieldDataloadModuleProcessor
+class PostCategoryFieldDataloadComponentProcessor extends AbstractFieldDataloadComponentProcessor
 {
     private ?PostCategoryObjectTypeResolver $postCategoryObjectTypeResolver = null;
 
@@ -21,14 +21,14 @@ class PostCategoryFieldDataloadModuleProcessor extends AbstractFieldDataloadModu
         return $this->postCategoryObjectTypeResolver ??= $this->instanceManager->getInstance(PostCategoryObjectTypeResolver::class);
     }
 
-    public function getRelationalTypeResolver(array $module): ?RelationalTypeResolverInterface
+    public function getRelationalTypeResolver(array $component): ?RelationalTypeResolverInterface
     {
-        switch ($module[1]) {
-            case self::MODULE_DATALOAD_RELATIONALFIELDS_CATEGORY:
-            case self::MODULE_DATALOAD_RELATIONALFIELDS_CATEGORYLIST:
+        switch ($component[1]) {
+            case self::COMPONENT_DATALOAD_RELATIONALFIELDS_CATEGORY:
+            case self::COMPONENT_DATALOAD_RELATIONALFIELDS_CATEGORYLIST:
                 return $this->getPostCategoryObjectTypeResolver();
         }
 
-        return parent::getRelationalTypeResolver($module);
+        return parent::getRelationalTypeResolver($component);
     }
 }
