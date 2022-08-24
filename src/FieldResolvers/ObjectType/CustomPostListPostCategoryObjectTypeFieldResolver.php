@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PoPCMSSchema\PostCategories\FieldResolvers\ObjectType;
 
+use PoP\ComponentModel\TypeResolvers\ObjectType\ObjectTypeResolverInterface;
 use PoPCMSSchema\Categories\FieldResolvers\ObjectType\AbstractCustomPostListCategoryObjectTypeFieldResolver;
 use PoPCMSSchema\Categories\TypeAPIs\CategoryTypeAPIInterface;
 use PoPCMSSchema\Categories\TypeResolvers\ObjectType\CategoryObjectTypeResolverInterface;
@@ -21,6 +22,7 @@ class CustomPostListPostCategoryObjectTypeFieldResolver extends AbstractCustomPo
     }
     final protected function getPostCategoryTypeAPI(): PostCategoryTypeAPIInterface
     {
+        /** @var PostCategoryTypeAPIInterface */
         return $this->postCategoryTypeAPI ??= $this->instanceManager->getInstance(PostCategoryTypeAPIInterface::class);
     }
     final public function setPostCategoryObjectTypeResolver(PostCategoryObjectTypeResolver $postCategoryObjectTypeResolver): void
@@ -29,6 +31,7 @@ class CustomPostListPostCategoryObjectTypeFieldResolver extends AbstractCustomPo
     }
     final protected function getPostCategoryObjectTypeResolver(): PostCategoryObjectTypeResolver
     {
+        /** @var PostCategoryObjectTypeResolver */
         return $this->postCategoryObjectTypeResolver ??= $this->instanceManager->getInstance(PostCategoryObjectTypeResolver::class);
     }
 
@@ -40,6 +43,9 @@ class CustomPostListPostCategoryObjectTypeFieldResolver extends AbstractCustomPo
         return false;
     }
 
+    /**
+     * @return array<class-string<ObjectTypeResolverInterface>>
+     */
     public function getObjectTypeResolverClassesToAttachTo(): array
     {
         return [
