@@ -26,9 +26,12 @@ class PostCategoryTaxonomyEnumStringScalarTypeResolver extends AbstractCategoryT
         return 'PostCategoryTaxonomyEnumString';
     }
 
-    public function getEnumStringTypeDescription(): ?string
+    public function getTypeDescription(): string
     {
-        return $this->__('Post category taxonomies (available for querying via the API)', 'categories');
+        return sprintf(
+            $this->__('Post category taxonomies (available for querying via the API), with possible values: `"%s"`.', 'categories'),
+            implode('"`, `"', $this->getConsolidatedPossibleValues())
+        );
     }
 
     protected function getRegisteredCustomPostCategoryTaxonomyNames(): ?array
